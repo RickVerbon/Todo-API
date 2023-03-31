@@ -1,10 +1,10 @@
-from rest_framework.response import Response
-from rest_framework import authentication, generics, permissions, status
-from todo.models import Todo
-from todo.serializes import TodoSerializer
-from todo.permissions import IsOwnerOrReadOnly
+from rest_framework import generics, permissions, status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+
+from todo.models import Todo
+from todo.permissions import IsOwnerOrReadOnly
+from todo.serializes import TodoSerializer
 
 
 # Create your views here.
@@ -21,7 +21,8 @@ class TodosListCreateAPIView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response({"detail": "Authentication credentials were not provided"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"detail": "Authentication credentials were not provided"},
+                            status=status.HTTP_401_UNAUTHORIZED)
         serializer = TodoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
@@ -32,6 +33,23 @@ class TodosListCreateAPIView(generics.ListCreateAPIView):
 class TodoDestroyAPIView(generics.DestroyAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsOwnerOrReadOnly]
-
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
+
+
+class TodoUpdateView(generics.UpdateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+
+
+class TodoDetailView(generics.RetrieveAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+
+
+
+
