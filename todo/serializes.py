@@ -5,5 +5,12 @@ from rest_framework import serializers
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
-        fields = "__all__"
+        fields = ('id', 'todo_text', 'completed')
         read_only_fields = ["user"]
+
+
+class MarkAsCompleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = ('completed',)
+
